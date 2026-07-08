@@ -1,5 +1,5 @@
 "=============================================================================
-" api.vim --- SpaceVim api
+" api.vim --- SpaceVim api (thin Lua wrapper)
 " Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
@@ -27,10 +27,6 @@
 
 let s:apis = {}
 
-" the api itself is a dict, and it will be changed when user use the api. so
-" every time when request a api, we should provide an clean api.
-
-
 ""
 " Import API base the given {name}, and return the API object. for all
 " available APIs please check |spacevim-api|
@@ -38,6 +34,15 @@ function! SpaceVim#api#import(name) abort
   if has_key(s:apis, a:name)
     return deepcopy(s:apis[a:name])
   endif
+  " Try Lua implementation first (Neovim)
+  if has('nvim')
+    let p = luaeval("require('spacevim.api').import(_A)", a:name)
+    if !empty(p)
+      let s:apis[a:name] = deepcopy(p)
+      return p
+    endif
+  endif
+  " Fall back to Vim script implementation
   let p = {}
   try
     let p = SpaceVim#api#{a:name}#get()
@@ -78,3 +83,4 @@ function! SpaceVim#api#register(name, api) abort
 endfunction
 
 " vim:set fdm=marker sw=2 nowrap:
+
