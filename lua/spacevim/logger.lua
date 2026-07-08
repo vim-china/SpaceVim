@@ -66,14 +66,14 @@ function M.viewLog(...)
   local info = '<details><summary> SpaceVim debug information </summary>\n\n'
     .. '### SpaceVim options :\n\n'
     .. '```toml\n'
-    .. fn.join(call('SpaceVim#options#list'), '\n')
+    .. fn.join(require('spacevim.options').list(), '\n')
     .. '\n```\n'
     .. '\n\n'
     .. '### SpaceVim layers :\n\n'
-    .. call('SpaceVim#layers#report')
+    .. require('spacevim.layer').report()
     .. '\n\n'
     .. '### SpaceVim Health checking :\n\n'
-    .. call('SpaceVim#health#report')
+    .. require('spacevim.health').report()
     .. '\n\n'
     .. '### SpaceVim runtime log :\n\n'
     .. '```log\n'
