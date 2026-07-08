@@ -7,11 +7,9 @@
 --=============================================================================
 
 local Key = require('spacevim.api').import('vim.keys')
+local vim_api = require('spacevim.api').import('vim')
 
 local M = {}
-
-M.__cmp = require('spacevim.api').import('vim.compatible')
-M.__vim = require('spacevim.api').import('vim')
 
 M._keys = {
   close = Key.t('<Esc>'),
@@ -39,7 +37,7 @@ function M.open()
   vim.o.ruler = false
   M._quit = false
   M._build_prompt()
-  if M.__cmp.fn.empty(M._prompt.cursor_begin) == 0 then
+  if vim.fn.empty(M._prompt.cursor_begin) == 0 then
     M._handle_input(M._prompt.cursor_begin)
   else
     M._handle_input()
@@ -65,7 +63,7 @@ function M._handle_input(...)
   end
   M._c_r_mode = false
   while not M._quit do
-    local char = M.__vim.getchar()
+    local char = vim_api.getchar()
     if M._function_key[char] ~= nil then
       local ok, rst = pcall(M._function_key[char])
       if not ok then
@@ -92,8 +90,8 @@ function M._handle_input(...)
       goto continue
     elseif char == Key.t('<right>') then
       M._prompt.cursor_begin = M._prompt.cursor_begin .. M._prompt.cursor_char
-      M._prompt.cursor_char = M.__cmp.fn.matchstr(M._prompt.cursor_end, '^.')
-      M._prompt.cursor_end = M.__cmp.fn.substitute(M._prompt.cursor_end, '^.', '', 'g')
+      M._prompt.cursor_char = vim.fn.matchstr(M._prompt.cursor_end, '^.')
+      M._prompt.cursor_end = vim.fn.substitute(M._prompt.cursor_end, '^.', '', 'g')
       M._build_prompt()
       goto continue
     elseif char == Key.t('<left>') then
@@ -106,16 +104,16 @@ function M._handle_input(...)
       goto continue
     elseif char == Key.t('<C-w>') then
       M._prompt.cursor_begin =
-        M.__cmp.fn.substitute(M._prompt.cursor_begin, [[[^\ .*]\+\s*$]], '', 'g')
+        vim.fn.substitute(M._prompt.cursor_begin, [[[^\ .*]\+\s*$]], '', 'g')
       M._build_prompt()
     elseif char == Key.t('<C-a>') or char == Key.t('<Home>') then
-      M._prompt.cursor_end = M.__cmp.fn.substitute(
+      M._prompt.cursor_end = vim.fn.substitute(
         M._prompt.cursor_begin .. M._prompt.cursor_char .. M._prompt.cursor_end,
         '^.',
         '',
         'g'
       )
-      M._prompt.cursor_char = M.__cmp.fn.matchstr(M._prompt.cursor_begin, '^.')
+      M._prompt.cursor_char = vim.fn.matchstr(M._prompt.cursor_begin, '^.')
       M._prompt.cursor_begin = ''
       M._build_prompt()
       goto continue
@@ -164,7 +162,7 @@ function M._handle_input(...)
 end
 
 function M._build_prompt()
-  local ident = M.__cmp.fn['repeat'](' ', M.__cmp.win_screenpos(0)[2] - 1)
+  local ident = vim.fn['repeat'](' ', vim.fn.win_screenpos(0)[2] - 1)
   vim.cmd('redraw')
   vim.api.nvim_echo({
     { ident .. M._prompt.mpt, 'Comment' },
@@ -193,3 +191,4 @@ function M.close()
 end
 
 return M
+

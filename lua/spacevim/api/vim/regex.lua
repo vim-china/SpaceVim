@@ -12,12 +12,10 @@
 
 local M = {}
 
-M.__cmp = require('spacevim.api').import('vim.compatible')
-
 function M.equal(a, b, ...)
     local argv = {...}
     local ignore = argv[1] or false
-    if M.__cmp.fn.matchstr(a, b) == '' then return false else return true end
+    if vim.fn.matchstr(a, b) == '' then return false else return true end
 end
 
 
@@ -117,3 +115,4 @@ function M.parser(regex, is_perl)
 end
 
 return M
+
