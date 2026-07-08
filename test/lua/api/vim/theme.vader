@@ -1,0 +1,25 @@
+Execute ( SpaceVim lua api: theme.palette ):
+  if !has('nvim-0.7.2')
+    Log 'skip lua test'
+    finish
+  endif
+  let cmp = SpaceVim#api#import('vim#compatible')
+  Log 'test theme palette for gruvbox'
+  lua theme = require('spacevim.api.vim.theme')
+  AssertEqual cmp.luaeval('type(theme.palette("gruvbox"))'), 'table'
+  AssertEqual cmp.luaeval('#theme.palette("gruvbox")'), 9
+  Log 'test theme palette fallback'
+  AssertEqual cmp.luaeval('#theme.palette("nonexistent")'), 9
+  Log 'test theme palette default'
+  AssertEqual cmp.luaeval('#theme.palette()'), 9
+
+Execute ( SpaceVim lua api: theme.hi ):
+  if !has('nvim-0.7.2')
+    Log 'skip lua test'
+    finish
+  endif
+  lua theme = require('spacevim.api.vim.theme')
+  lua theme.hi()
+  AssertEqual exists('hi LeaderGuiderPrompt'), 1
+  AssertEqual exists('hi LeaderGuiderFill'), 1
+

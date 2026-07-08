@@ -1,0 +1,22 @@
+Execute ( SpaceVim lua: options.list ):
+  if !has('nvim-0.7.2')
+    Log 'skip lua test'
+    finish
+  endif
+  let cmp = SpaceVim#api#import('vim#compatible')
+  lua opts = require('spacevim.options')
+  Log 'test options.list returns a list'
+  AssertEqual cmp.luaeval('type(opts.list())'), 'table'
+  Log 'test options.list contains entries'
+  Assert cmp.luaeval('#opts.list()') > 0, 'options list should not be empty'
+
+Execute ( SpaceVim lua: health.report ):
+  if !has('nvim-0.7.2')
+    Log 'skip lua test'
+    finish
+  endif
+  let cmp = SpaceVim#api#import('vim#compatible')
+  lua health = require('spacevim.health')
+  Log 'test health.report returns a string'
+  AssertEqual cmp.luaeval('type(health.report())'), 'string'
+
