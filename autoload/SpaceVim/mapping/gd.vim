@@ -1,16 +1,16 @@
 "=============================================================================
-" gd.vim --- gd key binding
+" gd.vim --- gd key binding (thin Lua wrapper)
 " Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
 
-let s:gd = {}
 function! SpaceVim#mapping#gd#add(ft, func) abort
-    call extend(s:gd,{a:ft : a:func})
+  lua require('spacevim.mapping.gd').add(vim.fn.eval('a:ft'), vim.fn.eval('a:func'))
 endfunction
 
 function! SpaceVim#mapping#gd#get() abort
-    return get(s:gd, &filetype, '')
+  return luaeval("require('spacevim.mapping.gd').get()")
 endfunction
+
