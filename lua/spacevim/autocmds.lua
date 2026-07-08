@@ -161,42 +161,42 @@ function M.init()
     pattern = { '*' },
     group = spacevim_core,
     callback = function(_)
-      vim.fn['SpaceVim#plugins#windowsmanager#UpdateRestoreWinInfo']()
+      require('spacevim.plugin.windowsmanager').UpdateRestoreWinInfo()
     end,
   })
   create_autocmd({ 'WinEnter' }, {
     pattern = { '*' },
     group = spacevim_core,
     callback = function(_)
-      vim.fn['SpaceVim#plugins#windowsmanager#MarkBaseWin']()
+      require('spacevim.plugin.windowsmanager').MarkBaseWin()
     end,
   })
   create_autocmd({ 'BufLeave' }, {
     pattern = { '*' },
     group = spacevim_core,
     callback = function(_)
-      vim.fn['SpaceVim#plugins#history#savepos']()
+      require('spacevim.plugin.history').savepos()
     end,
   })
   create_autocmd({ 'VimEnter', 'FocusGained' }, {
     pattern = { '*' },
     group = spacevim_core,
     callback = function(_)
-      vim.fn['SpaceVim#plugins#history#readcache']()
+      require('spacevim.plugin.history').readcache()
     end,
   })
   create_autocmd({ 'FocusLost', 'VimLeave' }, {
     pattern = { '*' },
     group = spacevim_core,
     callback = function(_)
-      vim.fn['SpaceVim#plugins#history#writecache']()
+      require('spacevim.plugin.history').writecache()
     end,
   })
   create_autocmd({ 'BufReadPost' }, {
     pattern = { '*' },
     group = spacevim_core,
     callback = function(_)
-      vim.fn['SpaceVim#plugins#history#jumppos']()
+      require('spacevim.plugin.history').jumppos()
     end,
   })
 
@@ -261,3 +261,4 @@ function M.init()
 end
 
 return M
+
