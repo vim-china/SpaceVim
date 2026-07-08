@@ -9,15 +9,10 @@
 local M = {}
 
 local logger = require('spacevim.api').import('logger')
-local cmd = require('spacevim').cmd
-local call = require('spacevim').call
-local echo = require('spacevim').echo
-local fn = nil
-if vim.fn == nil then
-  fn = require('spacevim').fn
-else
-  fn = vim.fn
-end
+local cmd = vim.cmd
+local call = vim.call
+local fn = vim.fn
+local api = vim.api
 
 logger.set_name('SpaceVim')
 logger.set_level(1)
@@ -96,7 +91,7 @@ function M.viewLog(...)
       cmd('setl buftype=nofile')
       cmd('setl filetype=markdown')
     else
-      echo(info)
+      api.nvim_echo({ { info } }, false, {})
     end
   else
     return info
@@ -152,3 +147,4 @@ function M.derive(name)
 end
 
 return M
+

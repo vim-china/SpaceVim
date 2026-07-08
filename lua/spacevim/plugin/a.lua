@@ -7,15 +7,14 @@
 --=============================================================================
 
 local M = {}
-local sp = require('spacevim')
 local cmp = require('spacevim.api').import('vim.compatible')
-local cmd = require('spacevim').cmd
+local cmd = vim.cmd
 local sp_file = require('spacevim.api').import('file')
 local sp_opt = require('spacevim.opt')
 local sp_json = require('spacevim.api').import('data.json')
 local toml = require('spacevim.api.data.toml')
 local logger = require('spacevim.logger').derive('a.lua')
-local fn = vim.fn or require('spacevim').fn
+local fn = vim.fn
 local nt = require('spacevim.api').import('notify')
 
 local alternate_conf = {}
@@ -216,3 +215,4 @@ function M.complete(arglead, cmdline, cursorpos)
 end
 
 return M
+

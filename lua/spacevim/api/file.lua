@@ -1,13 +1,7 @@
 local M = {}
 
 local system = require('spacevim.api').import('system')
-local fn = nil
-
-if vim.fn == nil then
-    fn = require('spacevim').fn
-else
-    fn = vim.fn
-end
+local fn = vim.fn
 
 if system.isWindows then
     M.separator = '\\'
@@ -267,3 +261,4 @@ function M.finddir(what, where, ...)
 end
 
 return M
+

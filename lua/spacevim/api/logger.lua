@@ -6,7 +6,7 @@
 -- License: GPLv3
 --=============================================================================
 
-local fn = vim.fn or require('spacevim').fn
+local fn = vim.fn
 
 local nt = require('spacevim.api.notify')
 
@@ -155,3 +155,4 @@ function M.get_name()
 end
 
 return M
+

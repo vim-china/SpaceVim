@@ -1,12 +1,6 @@
 local M = {}
 -- should use local val
-local fn = nil
-
-if vim.fn == nil then
-    fn = require('spacevim').fn
-else
-    fn = vim.fn
-end
+local fn = vim.fn
 
 -- M._vim = require('spacevim.api').import('vim')
 -- M._iconv = require('spacevim.api').import('iconv')
@@ -43,3 +37,4 @@ else
 end
 
 return M
+

@@ -13,11 +13,12 @@ local sp_buffer = require('spacevim.api').import('vim.buffer')
 -- start debug mode
 logger.start_debug()
 
-local sp = require('spacevim')
 local sp_file = require('spacevim.api.file')
 local sp_json = require('spacevim.api.data.json')
 local sp_opt = require('spacevim.opt')
-local fn = sp.fn
+local fn = vim.fn
+local cmd = vim.cmd
+local api = vim.api
 local layer = require('spacevim.layer')
 local project_paths = {}
 local project_cache_path = sp_file.unify_path(sp_opt.data_dir, ':p') .. 'SpaceVim/projects.json'
@@ -147,7 +148,7 @@ local function change_dir(dir)
   if dir == sp_file.unify_path(fn.getcwd()) then
     return false
   else
-    sp.cmd(cd .. ' ' .. sp.fn.fnameescape(sp.fn.fnamemodify(dir, ':p')))
+    cmd(cd .. ' ' .. fn.fnameescape(fn.fnamemodify(dir, ':p')))
     return true
   end
 end
@@ -237,7 +238,7 @@ local function find_root_directory()
 end
 local function cache_project(prj)
   project_paths[prj.path] = prj
-  sp.cmd('let g:unite_source_menu_menus.Projects.command_candidates = []')
+  cmd('let g:unite_source_menu_menus.Projects.command_candidates = []')
   for _, key in pairs(sort_by_opened_time()) do
     local desc = '['
       .. project_paths[key].name
@@ -246,12 +247,12 @@ local function cache_project(prj)
       .. ' <'
       .. fn.strftime('%Y-%m-%d %T', project_paths[key].opened_time)
       .. '>'
-    local cmd = "call SpaceVim#plugins#projectmanager#open('" .. project_paths[key].path .. "')"
-    sp.cmd(
+    local cmd_str = "call SpaceVim#plugins#projectmanager#open('" .. project_paths[key].path .. "')"
+    cmd(
       'call add(g:unite_source_menu_menus.Projects.command_candidates, ["'
         .. desc
         .. '", "'
-        .. cmd
+        .. cmd_str
         .. '"])'
     )
   end
@@ -269,34 +270,34 @@ if sp_opt.enable_projects_cache == 1 then
   load_cache()
 end
 
-sp.cmd([[
+cmd([[
 let g:unite_source_menu_menus = get(g:,'unite_source_menu_menus',{})
 let g:unite_source_menu_menus.Projects = {'description': 'Custom mapped keyboard shortcuts                   [SPC] p p'}
 let g:unite_source_menu_menus.Projects.command_candidates = get(g:unite_source_menu_menus.Projects,'command_candidates', [])
 ]])
 
 if sp_opt.project_auto_root == 1 then
-  sp.cmd('augroup spacevim_project_rooter')
-  sp.cmd('autocmd!')
-  sp.cmd('autocmd VimEnter,BufEnter * ++nested call SpaceVim#plugins#projectmanager#current_root()')
-  sp.cmd(
+  cmd('augroup spacevim_project_rooter')
+  cmd('autocmd!')
+  cmd('autocmd VimEnter,BufEnter * ++nested call SpaceVim#plugins#projectmanager#current_root()')
+  cmd(
     "autocmd BufWritePost * :call setbufvar('%', 'rootDir', '') | call SpaceVim#plugins#projectmanager#current_root()"
   )
-  sp.cmd('augroup END')
+  cmd('augroup END')
 end
 local M = {}
 
 function M.list()
   if layer.isLoaded('unite') then
-    sp.cmd('Unite menu:Projects')
+    cmd('Unite menu:Projects')
   elseif layer.isLoaded('denite') then
-    sp.cmd('Denite menu:Projects')
+    cmd('Denite menu:Projects')
   elseif layer.isLoaded('fzf') then
-    sp.cmd('FzfMenu Projects')
+    cmd('FzfMenu Projects')
   elseif layer.isLoaded('leaderf') then
-    sp.cmd("call SpaceVim#layers#leaderf#run_menu('Projects')")
+    cmd("call SpaceVim#layers#leaderf#run_menu('Projects')")
   elseif layer.isLoaded('telescope') then
-    sp.cmd('Telescope project')
+    cmd('Telescope project')
   else
     logger.warn('fuzzy find layer is needed to find project!')
   end
@@ -305,23 +306,23 @@ end
 function M.open(project)
   local path = project_paths[project]['path']
   -- local name = project_paths[project]['name']
-  sp.cmd('tabnew')
+  cmd('tabnew')
   -- I am not sure we should set the project name here.
-  -- sp.cmd('let t:_spacevim_tab_name = "[' .. name .. ']"')
-  sp.cmd(cd .. ' ' .. path)
+  -- cmd('let t:_spacevim_tab_name = "[' .. name .. ']"')
+  cmd(cd .. ' ' .. path)
   if sp_opt.filemanager == 'vimfiler' then
-    sp.cmd('Startify | VimFiler')
+    cmd('Startify | VimFiler')
   elseif sp_opt.filemanager == 'nerdtree' then
-    sp.cmd('Startify | NERDTree')
+    cmd('Startify | NERDTree')
   elseif sp_opt.filemanager == 'defx' then
-    sp.cmd('Startify | Defx -new')
+    cmd('Startify | Defx -new')
   elseif sp_opt.filemanager == 'neo-tree' then
-    sp.cmd('Startify | NeoTreeFocusToggle')
+    cmd('Startify | NeoTreeFocusToggle')
   end
 end
 
 function M.current_name()
-  return sp.eval('b:_spacevim_project_name')
+  return api.nvim_eval('b:_spacevim_project_name')
 end
 
 function M.RootchandgeCallback()
@@ -379,7 +380,7 @@ function M.reg_callback(func, ...)
 end
 
 function M.kill_project()
-  local name = sp.eval('b:_spacevim_project_name')
+  local name = api.nvim_eval('b:_spacevim_project_name')
   if name ~= '' then
     sp_buffer.filter_do({
       ['expr'] = {
@@ -407,7 +408,7 @@ function M.OpenProject(p)
   local dir = vim.g.spacevim_src_root or '~'
   local project_root = sp_file.unify_path(dir, ':p') .. p
   if vim.fn.isdirectory(project_root) == 1 then
-    sp.cmd('tabnew | cd ' .. project_root .. ' | Startify')
+    cmd('tabnew | cd ' .. project_root .. ' | Startify')
   end
 end
 
@@ -472,3 +473,4 @@ end
 -- }}}
 
 return M
+

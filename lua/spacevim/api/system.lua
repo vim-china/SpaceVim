@@ -1,31 +1,16 @@
-local has = nil
-local fn = nil
-local vim_options = nil
-
-if vim.o ~= nil then
-    vim_options = vim.o
-else
-    vim_options = require('spacevim').vim_options
-end
-
-
-if vim.api == nil then
-    has = require('spacevim').has
-else
-    if vim.fn ~= nil then
-        has = vim.fn.has
-    else
-        has = require('spacevim').has
-    end
-end
-
-if vim.fn == nil then
-    fn = require('spacevim').fn
-else
-    fn = vim.fn
-end
+--=============================================================================
+-- system.lua --- system api implemented in lua
+-- Copyright (c) 2016-2023 Wang Shidong & Contributors
+-- Author: Wang Shidong < wsdjeg@outlook.com >
+-- URL: https://spacevim.org
+-- License: GPLv3
+--=============================================================================
 
 local M = {}
+
+local has = vim.fn.has
+local fn = vim.fn
+local vim_options = vim.o
 
 if has('win16') == 1 or has('win32') == 1 or has('win64') == 1 then
     M.isWindows = 1
@@ -85,7 +70,7 @@ function M.fileformat()
             fileformat = ''
         end
     elseif vim_options.fileformat == 'mac' then
-        fileformat = ''
+        fileformat = ''
     end
     return fileformat
 end

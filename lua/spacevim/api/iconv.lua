@@ -1,6 +1,6 @@
 local M = {}
-local has = require('spacevim').has
-local fn = require('spacevim').fn
+local has = vim.fn.has
+local fn = vim.fn
 
 if has('iconv') == 1 and has('nvim') == 0 then
     function M.iconv(str, from, to)
@@ -138,3 +138,4 @@ function! SpaceVim#api#iconv#get() abort
   return deepcopy(s:self)
 
 endfunction
+
