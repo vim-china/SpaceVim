@@ -52,7 +52,7 @@ local ilsep = ''
 local irsep = ''
 
 local loaded_modes = {}
-local colors_template = vim.fn['SpaceVim#mapping#guide#theme#gruvbox#palette']()
+local colors_template = require('spacevim.api.vim.theme').palette('gruvbox')
 local section_old_pos = {}
 
 local modes = {
@@ -175,7 +175,7 @@ local function input_method()
 end
 
 local function syntax_checking()
-  if vim.fn['SpaceVim#lsp#buf_server_ready']() then
+  if require('spacevim.lsp').server_ready() then
     local counts = require('spacevim.lsp').lsp_diagnostic_count()
     local errors = counts[1] or 0
     local warnings = counts[2] or 0
@@ -704,13 +704,7 @@ function M.def_colors()
   if #vim.g.spacevim_custom_color_palette > 0 then
     t = vim.g.spacevim_custom_color_palette
   else
-    local ok = pcall(function()
-      t = vim.fn['SpaceVim#mapping#guide#theme#' .. name .. '#palette']()
-    end)
-
-    if not ok then
-      t = vim.fn['SpaceVim#mapping#guide#theme#gruvbox#palette']()
-    end
+    t = require('spacevim.api.vim.theme').palette(name)
   end
   colors_template = t
   vim.api.nvim_set_hl(0, 'SpaceVim_statusline_a', {

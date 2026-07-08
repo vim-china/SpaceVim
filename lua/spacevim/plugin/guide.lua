@@ -522,7 +522,7 @@ local function guide_help_msg(escape)
 end
 
 local function updateStatusline()
-  vim.fn['SpaceVim#mapping#guide#theme#hi']()
+  require('spacevim.api.vim.theme').hi()
   local gname = guide_group.name or ''
   if #gname > 0 then
     gname = ' - ' .. string.sub(gname, 2)

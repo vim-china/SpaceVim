@@ -525,13 +525,7 @@ function M.def_colors()
   if #vim.g.spacevim_custom_color_palette > 0 then
     t = vim.g.spacevim_custom_color_palette
   else
-    local ok = pcall(function()
-      t = vim.fn['SpaceVim#mapping#guide#theme#' .. name .. '#palette']()
-    end)
-
-    if not ok then
-      t = vim.fn['SpaceVim#mapping#guide#theme#gruvbox#palette']()
-    end
+    t = require('spacevim.api.vim.theme').palette(name)
   end
   vim.api.nvim_set_hl(0, 'SpaceVim_tabline_a', {
     fg = t[1][1],
